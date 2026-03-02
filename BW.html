@@ -28,7 +28,7 @@
             position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
             background-image: 
                 radial-gradient(var(--primary-pink) 1.5px, transparent 1.5px),
-                radial-gradient(#4db6ac) 1.8px, transparent 1.8px),
+                radial-gradient(#4db6ac 1.8px, transparent 1.8px),
                 radial-gradient(#ffd54f 2px, transparent 2px);
             background-size: 70px 70px, 100px 100px, 130px 130px;
             opacity: 0.3; animation: particleFlow 20s linear infinite; z-index: 1;
@@ -45,66 +45,52 @@
         @keyframes flicker { 0% { transform: translateX(-50%) scale(1); } 100% { transform: translateX(-50%) scale(1.1); } }
         
         .cake-container { display: flex; flex-direction: column; align-items: center; filter: url('#liquid-goo'); margin-bottom: 20px; }
-        .cake-layer { width: 200px; height: 60px; background: #f06292; border-radius: 15px; margin-bottom: -10px; transform: translateY(-100vh); animation: dropIn 0.8s ease forwards; }
-        .layer-bottom { width: 240px; background: #e91e63; animation-delay: 0.2s; }
+        .cake-layer { width: 160px; height: 50px; background: #f06292; border-radius: 15px; margin-bottom: -10px; transform: translateY(-100vh); animation: dropIn 0.8s ease forwards; }
+        .layer-bottom { width: 200px; background: #e91e63; animation-delay: 0.2s; }
         .layer-top { animation-delay: 0.4s; z-index: 2; }
-        .liquid-cream { width: 210px; height: 40px; background: white; border-radius: 40px; transform: translateY(-100vh); animation: dropIn 1s ease 0.6s forwards; position: relative; z-index: 3; margin-bottom: -20px; }
+        .liquid-cream { width: 170px; height: 35px; background: white; border-radius: 40px; transform: translateY(-100vh); animation: dropIn 1s ease 0.6s forwards; position: relative; z-index: 3; margin-bottom: -20px; }
 
         /* Buttons & Text */
-        .Happy__Birthday { font-family: 'Brush Script MT', cursive; color: var(--primary-pink); font-size: 3rem; opacity: 0; animation: fadeIn 1s forwards 1.5s; }
-        .reveal-btn { background: var(--primary-pink); color: white; padding: 12px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; opacity: 0; animation: fadeIn 1s forwards 1.8s; text-decoration: none; display: inline-block; }
+        .Happy__Birthday { font-family: 'Brush Script MT', cursive; color: var(--primary-pink); font-size: 2.5rem; opacity: 0; animation: fadeIn 1s forwards 1.5s; }
+        .reveal-btn { background: var(--primary-pink); color: white; padding: 10px 20px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; opacity: 0; animation: fadeIn 1s forwards 1.8s; text-decoration: none; display: inline-block; font-size: 0.9rem; }
 
         /* Envelope */
         #envelope { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 70px; height: 50px; background: white; border: 2px solid var(--primary-pink); border-radius: 5px; font-size: 25px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; transition: 0.5s; visibility: hidden; }
-        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.5); visibility: visible; }
+        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.2); visibility: visible; }
 
-        /* THE 3D REVEAL LETTER */
-        /* Changed from fixed pixels to viewport units (vh, vw) to fit all screens */
+        /* --- REDUCED SIZE SECTION (0.5x Original) --- */
         .letter-wrapper {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            width: 85vw; max-width: 320px; height: 65vh; max-height: 480px;
+            width: 220px; height: 320px; /* Reduced base size */
             z-index: 101; transition: 0.6s; opacity: 0;
-            perspective: 1000px; /* Enhanced 3D effect */
         }
         .letter-wrapper.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
 
-        /* Cyan Letter (Front Layer) */
         .cyan-letter {
-            position: absolute; width: 100%; height: 90%; background: var(--letter-cyan);
-            right: 0; bottom: 0; border-radius: 10px; box-shadow: 5px 5px 20px rgba(0,0,0,0.1);
-            padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: center;
+            position: absolute; width: 180px; height: 260px; /* 0.5x size */
+            background: var(--letter-cyan); right: 0; bottom: 0; border-radius: 10px; 
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.1); padding: 12px; text-align: center; 
+            display: flex; flex-direction: column; justify-content: center;
             z-index: 10; transition: transform 0.8s ease; box-sizing: border-box;
-            transform-style: preserve-3d;
         }
 
-        /* Photo (Back Layer - Slides Out) */
         .photo-slide {
-            position: absolute; width: 100%; height: 90%; background: white; border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15); left: 0; top: 0;
-            z-index: 5; opacity: 0; transform: translateX(0) translateY(0) rotate(0deg);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
-            display: flex; align-items: center; justify-content: center; padding: 10px;
-            box-sizing: border-box;
-            transform-style: preserve-3d;
+            position: absolute; width: 180px; height: 260px; /* 0.5x size */
+            background: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+            left: 0; top: 0; z-index: 5; opacity: 0; transition: all 1s ease; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 6px;
         }
 
-        /* Mobile Image Optimization - FIXED */
         .photo-slide img { 
-            max-width: 100%; 
-            max-height: 100%; 
-            object-fit: contain; 
-            display: block;
-            border-radius: 5px;
+            max-width: 100%; max-height: 100%; object-fit: contain; display: block; border-radius: 5px;
         }
 
-        /* Reveal Logic - Shifted to avoid going off-screen */
-        /* Shifted photo less left and slightly up */
-        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-15%) translateY(-10%) rotate(-5deg); }
-        /* Shifted card slightly right and down */
-        .letter-wrapper.revealed .cyan-letter { transform: translateX(5%) translateY(10%) rotate(3deg); }
+        /* Shift logic reduced to keep images inside screen boundaries */
+        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-25%) rotate(-5deg); }
+        .letter-wrapper.revealed .cyan-letter { transform: translateX(25%); }
 
-        /* Popups */
-        .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 320px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 110; text-align: center; opacity: 0; transition: 0.4s; }
+        /* Treat Popups */
+        .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 280px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 110; text-align: center; opacity: 0; transition: 0.4s; }
         .show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
 
         @keyframes dropIn { to { transform: translateY(0); } }
@@ -146,12 +132,12 @@
             <img src="photo.jpg" alt="Birthday Image">
         </div>
         <div class="cyan-letter">
-            <div style="font-family: Georgia, serif; font-style: italic; font-size: 0.95rem;">
-                <p style="text-align: left; color: var(--primary-pink); font-weight: bold; margin: 5px 0;">Dear,</p>
-                <p style="margin: 5px 0;">I wish you happy birthday may God bless you and fulfill all your wishes. Stay happy and stay blessed.</p>
-                <p style="text-align: right; font-weight: bold; margin: 10px 0 0;">~Madhav</p>
+            <div style="font-family: Georgia, serif; font-style: italic; font-size: 0.8rem;">
+                <p style="text-align: left; color: var(--primary-pink); font-weight: bold; margin: 4px 0;">Dear,</p>
+                <p style="margin: 4px 0;">I wish you happy birthday may God bless you and fulfill all your wishes. Stay happy and stay blessed.</p>
+                <p style="text-align: right; font-weight: bold; margin: 4px 0;">~Madhav</p>
             </div>
-            <button class="reveal-btn" style="opacity:1; width:100%; margin-top:15px;" onclick="closeLetter()">Close</button>
+            <button class="reveal-btn" style="opacity:1; width:100%; margin-top:10px; padding: 8px;" onclick="closeLetter()">Close</button>
         </div>
     </div>
 
