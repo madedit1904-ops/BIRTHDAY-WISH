@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Reveal for Madhav</title>
+    <style>
+        :root {
+            --primary-pink: #c2185b;
+            --cream-white: #ffffff;
+            --bg-color: #fdf5e6;
+            --candle-color: #ffd54f;
+            --flame-color: #ff6d00;
+            --letter-cyan: #a0e9ff;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background-color: var(--bg-color);
+            height: 100vh; width: 100vw;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Background Particles */
+        .particles {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(var(--primary-pink) 1.5px, transparent 1.5px),
+                radial-gradient(#4db6ac 1.8px, transparent 1.8px),
+                radial-gradient(#ffd54f 2px, transparent 2px);
+            background-size: 70px 70px, 100px 100px, 130px 130px;
+            opacity: 0.3; animation: particleFlow 20s linear infinite; z-index: 1;
+        }
+        @keyframes particleFlow { from { transform: translate(0,0); } to { transform: translate(-5%, 5%); } }
+
+        /* Main Stage */
+        .main-stage { text-align: center; transition: filter 0.8s ease; z-index: 5; }
+        .blur-effect { filter: blur(15px) brightness(0.8); }
+
+        /* Cake & Candle */
+        .candle { width: 12px; height: 40px; background: var(--candle-color); margin: 0 auto -5px; position: relative; border-radius: 4px; z-index: 10; transform: translateY(-100vh); animation: dropIn 1s ease 1s forwards; }
+        .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 10px; height: 18px; background: var(--flame-color); border-radius: 50% 50% 20% 20%; box-shadow: 0 0 10px var(--flame-color); animation: flicker 0.1s infinite alternate; }
+        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); } 100% { transform: translateX(-50%) scale(1.1); } }
+        
+        .cake-container { display: flex; flex-direction: column; align-items: center; filter: url('#liquid-goo'); margin-bottom: 20px; }
+        .cake-layer { width: 200px; height: 60px; background: #f06292; border-radius: 15px; margin-bottom: -10px; transform: translateY(-100vh); animation: dropIn 0.8s ease forwards; }
+        .layer-bottom { width: 240px; background: #e91e63; animation-delay: 0.2s; }
+        .layer-top { animation-delay: 0.4s; z-index: 2; }
+        .liquid-cream { width: 210px; height: 40px; background: white; border-radius: 40px; transform: translateY(-100vh); animation: dropIn 1s ease 0.6s forwards; position: relative; z-index: 3; margin-bottom: -20px; }
+
+        /* Buttons & Text */
+        .Happy__Birthday { font-family: 'Brush Script MT', cursive; color: var(--primary-pink); font-size: 3rem; opacity: 0; animation: fadeIn 1s forwards 1.5s; }
+        .reveal-btn { background: var(--primary-pink); color: white; padding: 12px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; opacity: 0; animation: fadeIn 1s forwards 1.8s; text-decoration: none; display: inline-block; }
+
+        /* Envelope */
+        #envelope { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 70px; height: 50px; background: white; border: 2px solid var(--primary-pink); border-radius: 5px; font-size: 25px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; transition: 0.5s; visibility: hidden; }
+        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.5); visibility: visible; }
+
+        /* THE 3D REVEAL LETTER */
+        .letter-wrapper {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            width: 320px; height: 420px; z-index: 101; transition: 0.6s; opacity: 0;
+        }
+        .letter-wrapper.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+
+        /* Cyan Letter (Front Layer) */
+        .cyan-letter {
+            position: absolute; width: 260px; height: 360px; background: var(--letter-cyan);
+            right: 10px; top: 30px; border-radius: 10px; box-shadow: 5px 5px 20px rgba(0,0,0,0.1);
+            padding: 20px; text-align: center; display: flex; flex-direction: column; justify-content: center;
+            z-index: 10; transition: transform 0.8s ease;
+        }
+
+        /* Photo (Back Layer - Slides Out) */
+        .photo-slide {
+            position: absolute; width: 260px; height: 360px; background: white; border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); left: 30px; top: 30px;
+            z-index: 5; opacity: 0; transform: translateX(0) rotate(0deg);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden;
+        }
+        .photo-slide img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Reveal Logic */
+        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-55%) rotate(-12deg); }
+        .letter-wrapper.revealed .cyan-letter { transform: translateX(10%); }
+
+        /* Popups */
+        .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 320px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 110; text-align: center; opacity: 0; transition: 0.4s; }
+        .show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
+
+        @keyframes dropIn { to { transform: translateY(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bdayAudio" loop>
+        <source src="HBAUDIO.mp3" type="audio/mpeg">
+    </audio>
+
+    <svg style="position: absolute; width:0; height:0;">
+        <defs>
+            <filter id="liquid-goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" />
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="particles"></div>
+
+    <div class="main-stage" id="stage">
+        <div class="candle"><div class="flame"></div></div>
+        <div class="cake-container">
+            <div class="liquid-cream"></div>
+            <div class="cake-layer layer-top"></div>
+            <div class="cake-layer layer-bottom"></div>
+        </div>
+        <h1 class="Happy__Birthday">Happy Birthday!</h1>
+        <button class="reveal-btn" onclick="showEnvelope()">Tap to Reveal Letter</button>
+    </div>
+
+    <div id="envelope" onclick="openLetter()">💌</div>
+
+    <div class="letter-wrapper" id="letter">
+        <div class="photo-slide" id="photo">
+            <img src="photo.jpg" alt="Birthday Image">
+        </div>
+        <div class="cyan-letter">
+            <div style="font-family: Georgia, serif; font-style: italic;">
+                <p style="text-align: left; color: var(--primary-pink); font-weight: bold;">Dear,</p>
+                <p>I wish you happy birthday may God bless you and fulfill all your wishes. Stay happy and stay blessed.</p>
+                <p style="text-align: right; font-weight: bold;">~Madhav</p>
+            </div>
+            <button class="reveal-btn" style="opacity:1; width:100%; margin-top:15px;" onclick="closeLetter()">Close</button>
+        </div>
+    </div>
+
+    <div class="treat-popup" id="treat">
+        <h2 style="color: var(--primary-pink);">Wait! 😝</h2>
+        <p>Where is my Birthday Treat?</p>
+        <a href="https://wa.me/qr/XIA5GSRQ4KYBD1?text=I%20will%20give%20you%20my%20birthday%20treat%20😊" 
+           target="_blank" class="reveal-btn" style="opacity:1; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
+    </div>
+
+    <script>
+        // Start audio as soon as the page is ready (if browser allows)
+        window.addEventListener('load', () => {
+            const audio = document.getElementById('bdayAudio');
+            audio.play().catch(() => {
+                console.log("Autoplay blocked. Music will start on the first click.");
+            });
+        });
+
+        function showEnvelope() {
+            // Backup play command in case autoplay was blocked
+            document.getElementById('bdayAudio').play();
+            
+            document.getElementById('stage').classList.add('blur-effect');
+            document.getElementById('envelope').classList.add('active');
+        }
+
+        function openLetter() {
+            document.getElementById('envelope').style.opacity = '0';
+            const wrap = document.getElementById('letter');
+            wrap.classList.add('open');
+            setTimeout(() => { wrap.classList.add('revealed'); }, 600);
+        }
+
+        function closeLetter() {
+            document.getElementById('letter').classList.remove('open');
+            setTimeout(() => { document.getElementById('treat').classList.add('show'); }, 400);
+        }
+    </script>
+</body>
+</html>
