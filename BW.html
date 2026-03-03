@@ -6,11 +6,11 @@
     <title>Birthday Reveal for Madhav</title>
     <style>
         :root {
+            --strawberry: #ff5d8f;
+            --strawberry-dark: #e91e63;
+            --cream: #ffffff;
             --primary-pink: #c2185b;
-            --cream-white: #ffffff;
             --bg-color: #fdf5e6;
-            --candle-color: #ffd54f;
-            --flame-color: #ff6d00;
             --letter-cyan: #a0e9ff;
         }
 
@@ -19,11 +19,11 @@
             background-color: var(--bg-color);
             height: 100vh; width: 100vw;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
         }
 
-        /* Background Particles */
+        /* Particles Background */
         .particles {
             position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
             background-image: 
@@ -35,66 +35,54 @@
         }
         @keyframes particleFlow { from { transform: translate(0,0); } to { transform: translate(-5%, 5%); } }
 
-        /* Main Stage */
-        .main-stage { text-align: center; transition: filter 0.8s ease; z-index: 5; }
+        .main-stage { text-align: center; transition: filter 0.8s ease; z-index: 5; display: flex; flex-direction: column; align-items: center; }
         .blur-effect { filter: blur(15px) brightness(0.8); }
 
-        /* Cake & Candle */
-        .candle { width: 12px; height: 40px; background: var(--candle-color); margin: 0 auto -5px; position: relative; border-radius: 4px; z-index: 10; transform: translateY(-100vh); animation: dropIn 1s ease 1s forwards; }
-        .flame { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 10px; height: 18px; background: var(--flame-color); border-radius: 50% 50% 20% 20%; box-shadow: 0 0 10px var(--flame-color); animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { 0% { transform: translateX(-50%) scale(1); } 100% { transform: translateX(-50%) scale(1.1); } }
+        /* --- STRAWBERRY CAKE --- */
+        .cake-container { position: relative; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 15px 35px rgba(0,0,0,0.3)); margin-bottom: 30px; }
         
-        .cake-container { display: flex; flex-direction: column; align-items: center; filter: url('#liquid-goo'); margin-bottom: 20px; }
-        .cake-layer { width: 160px; height: 50px; background: #f06292; border-radius: 15px; margin-bottom: -10px; transform: translateY(-100vh); animation: dropIn 0.8s ease forwards; }
-        .layer-bottom { width: 200px; background: #e91e63; animation-delay: 0.2s; }
-        .layer-top { animation-delay: 0.4s; z-index: 2; }
-        .liquid-cream { width: 170px; height: 35px; background: white; border-radius: 40px; transform: translateY(-100vh); animation: dropIn 1s ease 0.6s forwards; position: relative; z-index: 3; margin-bottom: -20px; }
+        .layer { position: relative; background-color: var(--strawberry); background-image: radial-gradient(circle, rgba(255,255,255,0.2) 1.5px, transparent 1.5px); background-size: 25px 25px; height: 100px; border-bottom: 8px solid var(--strawberry-dark); transition: 0.5s; }
+        .back-layer { width: 140px; z-index: 1; animation: dropIn 0.8s ease-out 0.6s both; border-radius: 15px 15px 5px 5px; }
+        .front-layer { width: 200px; z-index: 10; margin-top: -40px; animation: dropIn 0.8s ease-out 0s both; border-radius: 15px 15px 12px 12px; box-shadow: 0 -10px 20px rgba(0,0,0,0.2); }
 
-        /* Buttons & Text */
-        .Happy__Birthday { font-family: 'Brush Script MT', cursive; color: var(--primary-pink); font-size: 2.5rem; opacity: 0; animation: fadeIn 1s forwards 1.5s; }
-        .reveal-btn { background: var(--primary-pink); color: white; padding: 10px 20px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; opacity: 0; animation: fadeIn 1s forwards 1.8s; text-decoration: none; display: inline-block; font-size: 0.9rem; }
+        .drip-container { position: absolute; top: 0; left: 0; width: 100%; filter: url('#gooey'); }
+        .cream-cap { width: 100%; height: 15px; background: var(--cream); border-radius: 15px 15px 0 0; }
+        .drip { position: absolute; background: var(--cream); width: 20px; height: 35px; border-radius: 0 0 12px 12px; top: 10px; animation: ooze 3s ease-in-out infinite alternate; }
 
-        /* Envelope */
-        #envelope { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 70px; height: 50px; background: white; border: 2px solid var(--primary-pink); border-radius: 5px; font-size: 25px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; transition: 0.5s; visibility: hidden; }
-        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.2); visibility: visible; }
+        /* Candle & Smoke */
+        .candle-group { position: absolute; top: -35px; left: 50%; transform: translateX(-50%); z-index: 0; animation: dropIn 0.8s ease-out 1.2s both; }
+        .candle { width: 12px; height: 45px; background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ffb6c1 5px, #ffb6c1 10px); border-radius: 4px; }
+        .flame { width: 16px; height: 24px; background: #ffca28; border-radius: 50% 50% 20% 20%; position: absolute; top: -24px; left: -2px; box-shadow: 0 0 20px #ffa000; animation: flicker 0.1s infinite alternate; transition: opacity 0.3s; }
+        .flame.off { opacity: 0; pointer-events: none; }
+        .smoke { position: absolute; top: -30px; left: 4px; width: 6px; height: 6px; background: rgba(100,100,100,0.5); border-radius: 50%; opacity: 0; }
+        .smoke.active { animation: rise 2s ease-out forwards; }
 
-        /* --- REDUCED SIZE SECTION (0.5x Original) --- */
-        .letter-wrapper {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-            width: 220px; height: 320px; /* Reduced base size */
-            z-index: 101; transition: 0.6s; opacity: 0;
-        }
+        /* Animations */
+        @keyframes dropIn { 0% { opacity: 0; transform: translateY(-100px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes ooze { from { height: 30px; } to { height: 55px; } }
+        @keyframes flicker { from { transform: scale(1); } to { transform: scale(1.1); } }
+        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0.5; } 100% { transform: translateY(-100px) scale(8); opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* UI Elements */
+        .Happy__Birthday { font-family: 'Brush Script MT', cursive; color: var(--primary-pink); font-size: 2.8rem; display: none; margin: 15px 0; }
+        .reveal-btn { background: var(--primary-pink); color: white; padding: 12px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; display: none; text-decoration: none; font-size: 1rem; box-shadow: 0 5px 15px rgba(194, 24, 91, 0.3); }
+        .blow-btn { padding: 15px 30px; font-weight: bold; color: white; background-color: var(--strawberry-dark); border: none; border-radius: 50px; cursor: pointer; animation: dropIn 0.8s ease-out 1.8s both; z-index: 20; }
+
+        /* Letter Reveal (0.5x Size) */
+        .letter-wrapper { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 200px; height: 300px; z-index: 101; transition: 0.6s; opacity: 0; }
         .letter-wrapper.open { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
-
-        .cyan-letter {
-            position: absolute; width: 180px; height: 260px; /* 0.5x size */
-            background: var(--letter-cyan); right: 0; bottom: 0; border-radius: 10px; 
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.1); padding: 12px; text-align: center; 
-            display: flex; flex-direction: column; justify-content: center;
-            z-index: 10; transition: transform 0.8s ease; box-sizing: border-box;
-        }
-
-        .photo-slide {
-            position: absolute; width: 180px; height: 260px; /* 0.5x size */
-            background: white; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
-            left: 0; top: 0; z-index: 5; opacity: 0; transition: all 1s ease; 
-            overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 6px;
-        }
-
-        .photo-slide img { 
-            max-width: 100%; max-height: 100%; object-fit: contain; display: block; border-radius: 5px;
-        }
-
-        /* Shift logic reduced to keep images inside screen boundaries */
+        .cyan-letter { position: absolute; width: 170px; height: 250px; background: var(--letter-cyan); right: 0; bottom: 0; border-radius: 10px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; z-index: 10; transition: transform 0.8s ease; box-sizing: border-box; }
+        .photo-slide { position: absolute; width: 170px; height: 250px; background: white; border-radius: 10px; left: 0; top: 0; z-index: 5; opacity: 0; transition: 1s; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 5px; box-sizing: border-box; }
+        .photo-slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-25%) rotate(-5deg); }
         .letter-wrapper.revealed .cyan-letter { transform: translateX(25%); }
 
-        /* Treat Popups */
+        /* Envelope & Treat */
+        #envelope { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 60px; height: 45px; background: white; border: 2px solid var(--primary-pink); border-radius: 5px; font-size: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; transition: 0.5s; visibility: hidden; }
+        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.3); visibility: visible; }
         .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 80%; max-width: 280px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 110; text-align: center; opacity: 0; transition: 0.4s; }
         .show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
-
-        @keyframes dropIn { to { transform: translateY(0); } }
-        @keyframes fadeIn { to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -103,54 +91,88 @@
         <source src="HBAUDIO.mp3" type="audio/mpeg">
     </audio>
 
-    <svg style="position: absolute; width:0; height:0;">
-        <defs>
-            <filter id="liquid-goo">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" />
-            </filter>
-        </defs>
+    <svg style="position: absolute; width: 0; height: 0;">
+        <filter id="gooey">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" />
+        </filter>
     </svg>
 
     <div class="particles"></div>
 
     <div class="main-stage" id="stage">
-        <div class="candle"><div class="flame"></div></div>
         <div class="cake-container">
-            <div class="liquid-cream"></div>
-            <div class="cake-layer layer-top"></div>
-            <div class="cake-layer layer-bottom"></div>
+            <div class="layer back-layer">
+                <div class="candle-group">
+                    <div class="flame" id="flame"></div>
+                    <div class="smoke" id="smoke"></div>
+                    <div class="candle"></div>
+                </div>
+                <div class="drip-container">
+                    <div class="cream-cap"></div>
+                    <div class="drip" style="left: 15%; animation-delay: 0.1s;"></div>
+                    <div class="drip" style="left: 65%; animation-delay: 0.7s;"></div>
+                </div>
+            </div>
+            <div class="layer front-layer">
+                <div class="drip-container">
+                    <div class="cream-cap"></div>
+                    <div class="drip" style="left: 5%; height: 45px; animation-delay: 0s;"></div>
+                    <div class="drip" style="left: 30%; height: 65px; animation-delay: 1.2s;"></div>
+                    <div class="drip" style="left: 55%; height: 40px; animation-delay: 0.4s;"></div>
+                    <div class="drip" style="left: 80%; height: 55px; animation-delay: 0.9s;"></div>
+                </div>
+            </div>
         </div>
-        <h1 class="Happy__Birthday">Happy Birthday!</h1>
-        <button class="reveal-btn" onclick="showEnvelope()">Tap to Reveal Letter</button>
+
+        <h1 class="Happy__Birthday" id="hbText">Happy Birthday!</h1>
+        
+        <button class="blow-btn" onclick="blowCandle()" id="blowBtn">Blow the Candle 🎂</button>
+        
+        <button class="reveal-btn" id="revealBtn" onclick="showEnvelope()">Reveal Your Letter 💌</button>
     </div>
 
     <div id="envelope" onclick="openLetter()">💌</div>
 
     <div class="letter-wrapper" id="letter">
-        <div class="photo-slide" id="photo">
-            <img src="photo.jpg" alt="Birthday Image">
-        </div>
+        <div class="photo-slide" id="photo"><img src="photo.jpg" alt="Birthday"></div>
         <div class="cyan-letter">
             <div style="font-family: Georgia, serif; font-style: italic; font-size: 0.8rem;">
                 <p style="text-align: left; color: var(--primary-pink); font-weight: bold; margin: 4px 0;">Dear,</p>
                 <p style="margin: 4px 0;">I wish you happy birthday May God bless you with endless joy, great success, and beautiful moments...stay happy and enjoy your day ✨</p>
                 <p style="text-align: right; font-weight: bold; margin: 4px 0;">~Madhav🐱</p>
             </div>
-            <button class="reveal-btn" style="opacity:1; width:100%; margin-top:10px; padding: 8px;" onclick="closeLetter()">Close</button>
+            <button class="reveal-btn" style="display:block; width:100%; margin-top:10px; padding: 8px;" onclick="closeLetter()">Close</button>
         </div>
     </div>
 
     <div class="treat-popup" id="treat">
         <h2 style="color: var(--primary-pink);">Wait! 😝</h2>
-        <p>Where is your Birthday Treat?</p>
+        <p>Where is Birthday Treat ?</p>
         <a href="https://wa.me/917074471907?text=%2AI%20will%20give%20you%20the%20treat%20soon%20%F0%9F%98%8A%2A" 
-           target="_blank" class="reveal-btn" style="opacity:1; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
+           target="_blank" class="reveal-btn" style="display:inline-block; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
     </div>
 
     <script>
-        function showEnvelope() {
+        function blowCandle() {
             document.getElementById('bdayAudio').play().catch(e => console.log("Audio play failed"));
+            
+            document.getElementById('flame').classList.add('off');
+            document.getElementById('smoke').classList.add('active');
+            document.getElementById('blowBtn').style.display = 'none';
+
+            const hb = document.getElementById('hbText');
+            hb.style.display = 'block';
+            hb.style.animation = 'fadeIn 1s forwards';
+
+            setTimeout(() => {
+                const rb = document.getElementById('revealBtn');
+                rb.style.display = 'inline-block';
+                rb.style.animation = 'fadeIn 1s forwards';
+            }, 1000);
+        }
+
+        function showEnvelope() {
             document.getElementById('stage').classList.add('blur-effect');
             document.getElementById('envelope').classList.add('active');
         }
@@ -169,4 +191,3 @@
     </script>
 </body>
 </html>
-
