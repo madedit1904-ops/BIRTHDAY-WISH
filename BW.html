@@ -23,6 +23,18 @@
             overflow: hidden;
         }
 
+        /* Particles are Back! */
+        .particles {
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: 
+                radial-gradient(var(--primary-pink) 1.5px, transparent 1.5px),
+                radial-gradient(#4db6ac 1.8px, transparent 1.8px),
+                radial-gradient(#ffd54f 2px, transparent 2px);
+            background-size: 70px 70px, 100px 100px, 130px 130px;
+            opacity: 0.2; animation: particleFlow 30s linear infinite; z-index: 1;
+        }
+        @keyframes particleFlow { from { transform: translate(0,0); } to { transform: translate(-5%, 5%); } }
+
         .confetti {
             position: absolute; width: 8px; height: 8px;
             opacity: 0; border-radius: 2px;
@@ -54,7 +66,7 @@
         
         .layer { position: relative; background-color: var(--strawberry); height: 100px; border-bottom: 8px solid var(--strawberry-dark); }
         
-        /* SEQUENCE FIXED: Front (Bottom) falls at 0.2s, Back (Top) falls at 0.8s */
+        /* Correct Layer Sequence */
         .front-layer { 
             width: 200px; z-index: 10; margin-top: -40px; border-radius: 15px 15px 12px 12px; 
             animation: smoothDrop 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; 
@@ -68,7 +80,6 @@
         .cream-cap { width: 100%; height: 15px; background: var(--cream); border-radius: 15px 15px 0 0; }
         .drip { position: absolute; background: var(--cream); width: 20px; height: 35px; border-radius: 0 0 12px 12px; top: 10px; animation: ooze 4s ease-in-out infinite alternate; }
 
-        /* Candle falls at 1.4s */
         .candle-group { 
             position: absolute; top: -35px; left: 50%; transform: translateX(-50%); z-index: 0; 
             animation: smoothDrop 1s ease-out 1.4s both;
@@ -96,6 +107,13 @@
             animation: smoothDrop 1s ease-out 2s both;
         }
 
+        /* Pulse Animation for Letter */
+        @keyframes letterPulse {
+            0% { transform: translate(-50%, 50%) scale(1.4); }
+            50% { transform: translate(-50%, 50%) scale(1.6); }
+            100% { transform: translate(-50%, 50%) scale(1.4); }
+        }
+
         @keyframes smoothDrop { from { opacity: 0; transform: translateY(-80px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes ooze { from { height: 30px; } to { height: 50px; } }
         @keyframes flicker { from { transform: scale(1); } to { transform: scale(1.1); } }
@@ -113,8 +131,18 @@
         .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-28%) rotate(-6deg); }
         .letter-wrapper.revealed .cyan-letter { transform: translateX(28%) rotate(2deg); }
 
-        #envelope { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); width: 60px; height: 45px; background: white; border: 2px solid var(--primary-pink); border-radius: 8px; font-size: 22px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; transition: 0.8s; visibility: hidden; }
-        #envelope.active { bottom: 50%; transform: translate(-50%, 50%) scale(1.4); visibility: visible; }
+        #envelope { 
+            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); 
+            width: 60px; height: 45px; background: white; border: 2px solid var(--primary-pink); 
+            border-radius: 8px; font-size: 22px; display: flex; justify-content: center; align-items: center; 
+            cursor: pointer; z-index: 100; transition: 0.8s; visibility: hidden; 
+        }
+        #envelope.active { 
+            bottom: 50%; transform: translate(-50%, 50%) scale(1.4); 
+            visibility: visible; 
+            animation: letterPulse 1.5s ease-in-out infinite;
+        }
+
         .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 85%; max-width: 280px; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); z-index: 110; text-align: center; opacity: 0; transition: 0.6s; pointer-events: none; }
         .treat-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
     </style>
@@ -124,6 +152,8 @@
     <audio id="bdayAudio" loop>
         <source src="HBAUDIO.mp3" type="audio/mpeg">
     </audio>
+
+    <div class="particles"></div>
 
     <svg style="position: absolute; width: 0; height: 0;">
         <filter id="gooey">
@@ -211,10 +241,14 @@
 
         function showEnvelope() {
             document.getElementById('stage').classList.add('blur-effect');
-            setTimeout(() => { document.getElementById('envelope').classList.add('active'); }, 300);
+            setTimeout(() => { 
+                document.getElementById('envelope').classList.add('active'); 
+            }, 300);
         }
 
         function openLetter() {
+            // Stop the pulsing when clicked
+            document.getElementById('envelope').style.animation = 'none';
             document.getElementById('envelope').style.opacity = '0';
             const wrap = document.getElementById('letter');
             wrap.classList.add('open');
