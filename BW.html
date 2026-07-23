@@ -1,242 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Reveal for Madhav</title>
-    <style>
-        :root {
-            --strawberry: #ff5d8f;
-            --strawberry-dark: #e91e63;
-            --cream: #ffffff;
-            --primary-pink: #c2185b;
-            --bg-color: #fdf5e6;
-            --letter-cyan: #a0e9ff;
-        }
-
-        body, html {
-            margin: 0; padding: 0;
-            background-color: var(--bg-color);
-            height: 100vh; width: 100vw;
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden;
-        }
-
-        /* Particles are Back! */
-        .particles {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background-image: 
-                radial-gradient(var(--primary-pink) 1.5px, transparent 1.5px),
-                radial-gradient(#4db6ac 1.8px, transparent 1.8px),
-                radial-gradient(#ffd54f 2px, transparent 2px);
-            background-size: 70px 70px, 100px 100px, 130px 130px;
-            opacity: 0.2; animation: particleFlow 30s linear infinite; z-index: 1;
-        }
-        @keyframes particleFlow { from { transform: translate(0,0); } to { transform: translate(-5%, 5%); } }
-
-        .confetti {
-            position: absolute; width: 8px; height: 8px;
-            opacity: 0; border-radius: 2px;
-            pointer-events: none; z-index: 2;
-        }
-
-        .main-stage { 
-            position: relative; text-align: center; z-index: 5; 
-            width: 100%; height: 100vh;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
-            transition: filter 1.5s ease;
-        }
-        .blur-effect { filter: blur(12px) brightness(0.8); }
-
-        .Happy__Birthday { 
-            position: absolute; top: 10%;
-            font-family: 'Brush Script MT', cursive; color: var(--primary-pink); 
-            font-size: 3.2rem; opacity: 0; transition: opacity 2s ease, transform 2s ease;
-            transform: translateY(-20px); pointer-events: none;
-        }
-        .text-show { opacity: 1; transform: translateY(0); }
-
-        .cake-container { 
-            position: relative; display: flex; flex-direction: column; align-items: center; 
-            filter: drop-shadow(0 15px 35px rgba(0,0,0,0.15)); 
-            margin: 20px 0; z-index: 10; 
-        }
-        
-        .layer { position: relative; background-color: var(--strawberry); height: 100px; border-bottom: 8px solid var(--strawberry-dark); }
-        
-        /* Correct Layer Sequence */
-        .front-layer { 
-            width: 200px; z-index: 10; margin-top: -40px; border-radius: 15px 15px 12px 12px; 
-            animation: smoothDrop 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; 
-        }
-        .back-layer { 
-            width: 140px; z-index: 1; border-radius: 15px 15px 5px 5px; 
-            animation: smoothDrop 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both; 
-        }
-
-        .drip-container { position: absolute; top: 0; left: 0; width: 100%; filter: url('#gooey'); }
-        .cream-cap { width: 100%; height: 15px; background: var(--cream); border-radius: 15px 15px 0 0; }
-        .drip { position: absolute; background: var(--cream); width: 20px; height: 35px; border-radius: 0 0 12px 12px; top: 10px; animation: ooze 4s ease-in-out infinite alternate; }
-
-        .candle-group { 
-            position: absolute; top: -35px; left: 50%; transform: translateX(-50%); z-index: 0; 
-            animation: smoothDrop 1s ease-out 1.4s both;
-        }
-        .candle { width: 12px; height: 45px; background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ffb6c1 5px, #ffb6c1 10px); border-radius: 4px; }
-        .flame { width: 16px; height: 24px; background: #ffca28; border-radius: 50% 50% 20% 20%; position: absolute; top: -24px; left: -2px; box-shadow: 0 0 20px #ffa000; animation: flicker 0.1s infinite alternate; transition: opacity 0.8s ease; }
-        .flame.off { opacity: 0; }
-        .smoke { position: absolute; top: -30px; left: 4px; width: 6px; height: 6px; background: rgba(150,150,150,0.5); border-radius: 50%; opacity: 0; pointer-events: none; }
-        .smoke.active { animation: rise 3s ease-out forwards; }
-
-        .reveal-btn { 
-            position: absolute; bottom: 15%;
-            background: var(--primary-pink); color: white; padding: 14px 30px; 
-            border-radius: 30px; border: none; font-weight: bold; cursor: pointer; 
-            opacity: 0; transition: 1.5s ease; transform: translateY(20px);
-            text-decoration: none; font-size: 1.1rem;
-        }
-        .btn-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-
-        .blow-btn { 
-            position: absolute; bottom: 15%;
-            padding: 15px 35px; font-weight: bold; color: white; 
-            background-color: var(--strawberry-dark); border: none; border-radius: 50px; 
-            cursor: pointer; transition: 0.5s ease; z-index: 20;
-            animation: smoothDrop 1s ease-out 2s both;
-        }
-
-        /* Pulse Animation for Letter */
-        @keyframes letterPulse {
-            0% { transform: translate(-50%, 50%) scale(1.4); }
-            50% { transform: translate(-50%, 50%) scale(1.6); }
-            100% { transform: translate(-50%, 50%) scale(1.4); }
-        }
-
-        @keyframes smoothDrop { from { opacity: 0; transform: translateY(-80px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes ooze { from { height: 30px; } to { height: 50px; } }
-        @keyframes flicker { from { transform: scale(1); } to { transform: scale(1.1); } }
-        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0.5; } 100% { transform: translateY(-150px) scale(15); opacity: 0; } }
-        @keyframes crackerBlast { 
-            0% { transform: translate(0,0) rotate(0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
-        }
-
-        .letter-wrapper { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); width: 200px; height: 300px; z-index: 101; transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; }
-        .letter-wrapper.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .cyan-letter { position: absolute; width: 170px; height: 250px; background: var(--letter-cyan); right: 0; bottom: 0; border-radius: 10px; padding: 15px; text-align: center; display: flex; flex-direction: column; justify-content: center; z-index: 10; transition: transform 1s ease; box-sizing: border-box; }
-        .photo-slide { position: absolute; width: 170px; height: 250px; background: white; border-radius: 10px; left: 0; top: 0; z-index: 5; opacity: 0; transition: 1.2s ease; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 5px; box-sizing: border-box; }
-        .photo-slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-28%) rotate(-6deg); }
-        .letter-wrapper.revealed .cyan-letter { transform: translateX(28%) rotate(2deg); }
-
-        #envelope { 
-            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); 
-            width: 60px; height: 45px; background: white; border: 2px solid var(--primary-pink); 
-            border-radius: 8px; font-size: 22px; display: flex; justify-content: center; align-items: center; 
-            cursor: pointer; z-index: 100; transition: 0.8s; visibility: hidden; 
-        }
-        #envelope.active { 
-            bottom: 50%; transform: translate(-50%, 50%) scale(1.4); 
-            visibility: visible; 
-            animation: letterPulse 1.5s ease-in-out infinite;
-        }
-
-        .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 85%; max-width: 280px; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); z-index: 110; text-align: center; opacity: 0; transition: 0.6s; pointer-events: none; }
-        .treat-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
-    </style>
-</head>
-<body>
-
-    <audio id="bdayAudio" loop>
-        <source src="HBAUDIO.mp3" type="audio/mpeg">
-    </audio>
-
-    <div class="particles"></div>
-
-    <svg style="position: absolute; width: 0; height: 0;">
-        <filter id="gooey">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" />
-        </filter>
-    </svg>
-
-    <div class="main-stage" id="stage">
-        <h1 class="Happy__Birthday" id="hbText">Happy Birthday!</h1>
-
-        <div class="cake-container">
-            <div class="layer back-layer">
-                <div class="candle-group">
-                    <div class="flame" id="flame"></div>
-                    <div class="smoke" id="smoke"></div>
-                    <div class="candle"></div>
-                </div>
-                <div class="drip-container"><div class="cream-cap"></div><div class="drip" style="left: 15%;"></div><div class="drip" style="left: 65%;"></div></div>
-            </div>
-            <div class="layer front-layer">
-                <div class="drip-container"><div class="cream-cap"></div><div class="drip" style="left: 5%;"></div><div class="drip" style="left: 30%;"></div><div class="drip" style="left: 55%;"></div><div class="drip" style="left: 80%;"></div></div>
-            </div>
-        </div>
-
-        <button class="blow-btn" onclick="blowCandle()" id="blowBtn">Blow the Candle 🎂</button>
-        <button class="reveal-btn" id="revealBtn" onclick="showEnvelope()">Reveal Your Letter 💌</button>
-    </div>
-
-    <div id="envelope" onclick="openLetter()">💌</div>
-
-    <div class="letter-wrapper" id="letter">
-        <div class="photo-slide" id="photo"><img src="photo.jpg" alt="Birthday"></div>
-        <div class="cyan-letter">
-            <div style="font-family: Georgia, serif; font-style: italic; font-size: 0.8rem;">
-                <p style="text-align: left; color: var(--primary-pink); font-weight: bold; margin: 4px 0;">Dear,</p>
-                <p style="margin: 4px 0;">I wish you happy birthday May God bless you with endless joy, great success, and beautiful moments...stay happy and enjoy your day ✨</p>
-                <p style="text-align: right; font-weight: bold; margin: 4px 0;">~Madhav🐱</p>
-            </div>
-            <button class="reveal-btn" style="opacity:1; display:block; position:relative; width:100%; margin-top:10px; padding: 10px; font-size: 0.85rem;" onclick="closeLetter()">Close</button>
-        </div>
-    </div>
-
-    <div class="treat-popup" id="treat">
-        <h2 style="color: var(--primary-pink); margin-top: 0;">Wait! 😝</h2>
-        <p>Where is Birthday Treat ?</p>
-        <a href="https://wa.me/917074471907?text=%2AI%20will%20give%20you%20the%20treat%20soon%20%F0%9F%98%8A%2A" 
-           target="_blank" class="reveal-btn" style="opacity:1; position:relative; display:inline-block; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
-    </div>
-
-    <script>
-        function createConfetti() {
-            const colors = ['#ff5d8f', '#c2185b', '#ffd54f', '#4db6ac', '#a0e9ff'];
-            for (let i = 0; i < 60; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'confetti';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = '50%';
-                particle.style.top = '20%';
-                const tx = (Math.random() - 0.5) * 800 + 'px';
-                const ty = (Math.random() - 0.2) * 800 + 'px';
-                particle.style.setProperty('--tx', tx);
-                particle.style.setProperty('--ty', ty);
-                particle.style.animation = `crackerBlast ${1 + Math.random()}s ease-out forwards`;
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 2000);
-            }
-        }
-
-        function blowCandle() {
-            document.getElementById('bdayAudio').play().catch(e => console.log("Audio failed"));
-            document.getElementById('flame').classList.add('off');
-            document.getElementById('smoke').classList.add('active');
-            const blowBtn = document.getElementById('blowBtn');
-            blowBtn.style.opacity = '0';
-            setTimeout(() => { blowBtn.style.display = 'none'; }, 600);
-            setTimeout(() => {
-                document.getElementById('hbText').classList.add('text-show');
-                createConfetti(); 
-            }, 800);
-            setTimeout(() => {
+setTimeout(() => {
                 document.getElementById('revealBtn').classList.add('btn-show');
-            }, 2500);
+            }, 2300);
         }
 
         function showEnvelope() {
@@ -247,12 +11,24 @@
         }
 
         function openLetter() {
-            // Stop the pulsing when clicked
             document.getElementById('envelope').style.animation = 'none';
             document.getElementById('envelope').style.opacity = '0';
             const wrap = document.getElementById('letter');
             wrap.classList.add('open');
             setTimeout(() => { wrap.classList.add('revealed'); }, 900);
+        }
+
+        // Letter Navigation Logic (Page 1 -> Page 2 -> Close -> Treat Popup)
+        let currentPage = 1;
+        function nextLetterPage() {
+            if (currentPage === 1) {
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'block';
+                document.getElementById('letterNavBtn').innerText = 'Close ❤️';
+                currentPage = 2;
+            } else {
+                closeLetter();
+            }
         }
 
         function closeLetter() {
