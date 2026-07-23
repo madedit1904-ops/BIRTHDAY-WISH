@@ -85,7 +85,7 @@
         .drip { position: absolute; background: var(--cream); width: 20px; height: 35px; border-radius: 0 0 12px 12px; top: 10px; animation: ooze 4s ease-in-out infinite alternate; }
 
         /* Candle - Drops Third (1.4s) */
-           .candle-group { 
+        .candle-group { 
             position: absolute; top: -35px; left: 50%; transform: translateX(-50%); z-index: 0; 
             animation: realisticDrop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s both;
         }
@@ -149,8 +149,8 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         
-        .photo-slide {
-        position: absolute; width: 180px; height: 270px; background: white; 
+        .photo-slide { 
+            position: absolute; width: 180px; height: 270px; background: white; 
             border-radius: 12px; left: 0; top: 0; z-index: 5; opacity: 0; 
             transition: 1.2s ease; overflow: hidden; display: flex; 
             align-items: center; justify-content: center; padding: 5px; box-sizing: border-box; 
@@ -226,7 +226,8 @@
     </div>
 
     <div id="envelope" onclick="openLetter()">💌</div>
-<!-- Letter Popup with Multi-Page Transition -->
+
+    <!-- Letter Popup with Multi-Page Transition -->
     <div class="letter-wrapper" id="letter">
         <div class="photo-slide" id="photo"><img src="photo.jpg" alt="Birthday"></div>
         <div class="cyan-letter">
@@ -278,7 +279,7 @@
                 const ty = (Math.random() - 0.2) * 800 + 'px';
                 particle.style.setProperty('--tx', tx);
                 particle.style.setProperty('--ty', ty);
-                particle.style.animation = crackerBlast ${1 + Math.random()}s ease-out forwards;
+                particle.style.animation = `crackerBlast ${1 + Math.random()}s ease-out forwards`;
                 document.body.appendChild(particle);
                 setTimeout(() => particle.remove(), 2000);
             }
@@ -297,7 +298,8 @@
                 document.getElementById('hbText').classList.add('text-show');
                 createConfetti(); 
             }, 800);
-          setTimeout(() => {
+
+            setTimeout(() => {
                 document.getElementById('revealBtn').classList.add('btn-show');
             }, 2300);
         }
