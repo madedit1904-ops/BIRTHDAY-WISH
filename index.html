@@ -116,7 +116,7 @@
         /* --- Keyframes --- */
         @keyframes realisticDrop {
             0% { opacity: 0; transform: translateY(-300px) scaleY(1.2); }
-            70% { opacity: 1; transform: translateY(10px) scaleY(0.9); } /* Bounce impact */
+            70% { opacity: 1; transform: translateY(10px) scaleY(0.9); }
             85% { transform: translateY(-5px) scaleY(1.02); }
             100% { opacity: 1; transform: translateY(0) scaleY(1); }
         }
@@ -180,11 +180,10 @@
         .treat-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
 
         .letter-text {
-            font-family: Georgia, serif; font-style: italic; font-size: 0.78rem; color: #333; line-height: 1.35;
+            font-family: Georgia, serif; font-style: italic; font-size: 0.75rem; color: #333; line-height: 1.35;
             max-height: 195px; overflow-y: auto; text-align: left;
         }
         
-        /* Custom Small Scrollbar for 2nd Letter */
         .letter-text::-webkit-scrollbar { width: 3px; }
         .letter-text::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 3px; }
     </style>
@@ -239,15 +238,15 @@
                 <p style="text-align: right; font-weight: bold; margin: 8px 0 0 0;">~Madhav🐱</p>
             </div>
 
-            <!-- Page 2 (Your custom Bengali message) -->
+            <!-- Page 2 (Updated Bengali Message) -->
             <div id="page2" class="letter-text" style="display: none;">
                 <p style="margin: 0;">
-                    Asa korchi ar korbo tumi valo acho ar valo thakbe<br><br>
-                    Sara jibon hasi Khushi te katabe ami chara ba amake niye saita tumi jano<br><br>
-                    Sorry ja sob chilo abar o bolbo amar sotti kharap lagche ar akta kotha bolar chilo joto taratari bolbo amar jonne valo<br><br>
-                    Tumi to message koro na ar ami chai o na tumi koro kintu somoi hole amar ja mon e akta kotha atkiye ache saita ami tomake bolte chai se tumi tomar somoi moto 1 2 mas ba 1 2 bochor por text koro amar kono problem nai 🥰<br><br>
-                    Tumi na valo thakbe ar thick khabar khabe<br><br>
-                    Lots of love to you as a elder one pekathi 😁
+                    Asha korchi tumi bhalo acho, ar shobshomoy emni bhalo theko. 😊<br><br>
+                    Sara jibon hashi-khushi te katuk—ami thaki ba na thaki, seta tumi nijeyi bhalo jano.<br><br>
+                    Ar ekbar sorry bolchi shob kichur jonno. Sotti amar khub kharap lage. Ar ekta kotha bolar chilo, jeta joto taratari bolte parbo, totoi amar jonno bhalo hobe.<br><br>
+                    Tumi to ar message koro na, ar sotti bolte ami chai o na je tumi kono pressure niye message koro. Kintu jokhon tomar ichha hobe, hok seta 1–2 mash pore ba 1–2 bochor pore, ekbar text koro. Amar mone ekta kotha atke ache, seta shudhu tomake bolte chai. Tar beshi kichu na. 🥰<br><br>
+                    Nijer khayal rekho. Bhalo theko, Porasona koro thik moto khabar kheyo ar valo bondhu bandhobi banao.<br><br>
+                    Lots of love to you, as an elder one... Pekathi. 😁❤️
                 </p>
             </div>
 
@@ -319,7 +318,6 @@
             setTimeout(() => { wrap.classList.add('revealed'); }, 900);
         }
 
-        // Letter Navigation Logic (Page 1 -> Page 2 -> Close -> Treat Popup)
         let currentPage = 1;
         function nextLetterPage() {
             if (currentPage === 1) {
