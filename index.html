@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Reveal for Madhav</title>
+    <title>Happy Birthday Riya 🥳</title>
     <style>
         :root {
             --strawberry: #ff5d8f;
@@ -19,7 +19,7 @@
             background-color: var(--bg-color);
             height: 100vh; width: 100vw;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
 
@@ -55,7 +55,7 @@
         .Happy__Birthday { 
             position: absolute; top: 8%;
             font-family: 'Brush Script MT', cursive; color: var(--primary-pink); 
-            font-size: 3.2rem; opacity: 0; transition: opacity 2s ease, transform 2s ease;
+            font-size: 2.8rem; opacity: 0; transition: opacity 2s ease, transform 2s ease;
             transform: translateY(-20px); pointer-events: none;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
@@ -70,7 +70,6 @@
         
         .layer { position: relative; background-color: var(--strawberry); height: 100px; border-bottom: 8px solid var(--strawberry-dark); }
         
-        /* Drop sequence: Bottom First (0.2s), Top Second (0.8s) */
         .front-layer { 
             width: 200px; z-index: 10; margin-top: -40px; border-radius: 15px 15px 12px 12px; 
             animation: realisticDrop 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s both; 
@@ -84,7 +83,7 @@
         .cream-cap { width: 100%; height: 15px; background: var(--cream); border-radius: 15px 15px 0 0; }
         .drip { position: absolute; background: var(--cream); width: 20px; height: 35px; border-radius: 0 0 12px 12px; top: 10px; animation: ooze 4s ease-in-out infinite alternate; }
 
-        /* Candle - Drops Third (1.4s) */
+        /* Candle */
         .candle-group { 
             position: absolute; top: -35px; left: 50%; transform: translateX(-50%); z-index: 0; 
             animation: realisticDrop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s both;
@@ -113,7 +112,7 @@
             animation: realisticDrop 0.8s ease-out 1.9s both;
         }
 
-        /* --- Keyframes --- */
+        /* Keyframes */
         @keyframes realisticDrop {
             0% { opacity: 0; transform: translateY(-300px) scaleY(1.2); }
             70% { opacity: 1; transform: translateY(10px) scaleY(0.9); }
@@ -133,33 +132,49 @@
             100% { transform: translate(-50%, 50%) scale(1.3); }
         }
 
-        /* --- LETTER MODAL & MULTI-PAGE SYSTEM --- */
+        /* --- FADE ANIMATION FOR TEXT & PHOTO --- */
+        .fade-up-down {
+            animation: fadeUpDown 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeUpDown {
+            0% { opacity: 0; filter: blur(3px); }
+            100% { opacity: 1; filter: blur(0); }
+        }
+
+        /* --- SIDE-BY-SIDE LETTER & PHOTO MODAL --- */
         .letter-wrapper { 
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); 
-            width: 210px; height: 310px; z-index: 101; 
+            width: 210px; height: 320px; z-index: 101; 
             transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; 
         }
         .letter-wrapper.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         
         .cyan-letter { 
-            position: absolute; width: 180px; height: 270px; background: var(--letter-cyan); 
-            right: 0; bottom: 0; border-radius: 12px; padding: 15px; text-align: center; 
+            position: absolute; width: 210px; height: 320px; background: var(--letter-cyan); 
+            right: 0; bottom: 0; border-radius: 15px; padding: 16px; text-align: center; 
             display: flex; flex-direction: column; justify-content: space-between; 
-            z-index: 10; transition: transform 1s ease; box-sizing: border-box; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 10; transition: transform 0.8s ease; box-sizing: border-box; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
         }
         
         .photo-slide { 
-            position: absolute; width: 180px; height: 270px; background: white; 
-            border-radius: 12px; left: 0; top: 0; z-index: 5; opacity: 0; 
-            transition: 1.2s ease; overflow: hidden; display: flex; 
-            align-items: center; justify-content: center; padding: 5px; box-sizing: border-box; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: absolute; width: 210px; height: 320px; background: white; 
+            border-radius: 15px; left: 0; top: 0; z-index: 5; opacity: 0; 
+            transition: transform 0.8s ease, opacity 0.8s ease; overflow: hidden; display: flex; 
+            align-items: center; justify-content: center; padding: 8px; box-sizing: border-box; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
         }
-        .photo-slide img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .photo-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; transition: opacity 0.4s ease; }
         
-        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-32%) rotate(-6deg); }
-        .letter-wrapper.revealed .cyan-letter { transform: translateX(32%) rotate(2deg); }
+        /* Side-by-Side Tilted positioning on reveal */
+        .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-55%) rotate(-3deg); }
+        .letter-wrapper.revealed .cyan-letter { transform: translateX(55%) rotate(3deg); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 500px) {
+            .letter-wrapper.revealed .photo-slide { transform: translateX(-48%) scale(0.9) rotate(-3deg); }
+            .letter-wrapper.revealed .cyan-letter { transform: translateX(48%) scale(0.9) rotate(3deg); }
+        }
 
         /* Envelope Icon */
         #envelope { 
@@ -179,20 +194,24 @@
         .treat-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); width: 85%; max-width: 280px; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.15); z-index: 110; text-align: center; opacity: 0; transition: 0.6s; pointer-events: none; }
         .treat-popup.show { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; }
 
+        /* BOLD & READABLE TEXT STYLING */
         .letter-text {
-            font-family: Georgia, serif; font-style: italic; font-size: 0.75rem; color: #333; line-height: 1.35;
-            max-height: 195px; overflow-y: auto; text-align: left;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 0.8rem; 
+            font-weight: 600;
+            color: #1a202c; 
+            line-height: 1.45;
+            max-height: 220px; 
+            overflow-y: auto; 
+            text-align: left;
+            padding-right: 4px;
         }
         
-        .letter-text::-webkit-scrollbar { width: 3px; }
-        .letter-text::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 3px; }
+        .letter-text::-webkit-scrollbar { width: 4px; }
+        .letter-text::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 4px; }
     </style>
 </head>
 <body>
-
-    <audio id="bdayAudio" loop>
-        <source src="HBAUDIO.mp3" type="audio/mpeg">
-    </audio>
 
     <div class="particles"></div>
 
@@ -204,7 +223,7 @@
     </svg>
 
     <div class="main-stage" id="stage">
-        <h1 class="Happy__Birthday" id="hbText">Happy Birthday!</h1>
+        <h1 class="Happy__Birthday" id="hbText">Happy Birthday Riya 🥳</h1>
 
         <div class="cake-container">
             <div class="layer back-layer">
@@ -226,35 +245,96 @@
 
     <div id="envelope" onclick="openLetter()">💌</div>
 
-    <!-- Letter Popup with Multi-Page Transition -->
+    <!-- Letter Popup with Dynamic Audio & Photo Transitions -->
     <div class="letter-wrapper" id="letter">
-        <div class="photo-slide" id="photo"><img src="photo.jpg" alt="Birthday"></div>
+        <div class="photo-slide" id="photoContainer">
+            <img id="letterPhoto" src="photo.jpg" alt="Riya's Birthday Photo">
+        </div>
+        
         <div class="cyan-letter">
             
-            <!-- Page 1 -->
-            <div id="page1" class="letter-text">
-                <p style="text-align: left; color: var(--primary-pink); font-weight: bold; margin: 0 0 5px 0;">Dear,</p>
-                <p style="margin: 0;">I wish you happy birthday May God bless you with endless joy, great success, and beautiful moments...stay happy and enjoy your day ✨</p>
-                <p style="text-align: right; font-weight: bold; margin: 8px 0 0 0;">~Madhav🐱</p>
-            </div>
-
-            <!-- Page 2 (Updated Bengali Message) -->
-            <div id="page2" class="letter-text" style="display: none;">
+            <!-- Page 1 (HBAUDIO.mp3 + photo.jpg) -->
+            <div id="page1" class="letter-text fade-up-down">
+                <p style="text-align: left; color: var(--primary-pink); font-weight: 700; margin: 0 0 6px 0;">Happy birthday Riya 🥳</p>
                 <p style="margin: 0;">
-                    Asha korchi tumi bhalo acho, ar shobshomoy emni bhalo theko. 😊<br><br>
-                    Sara jibon hashi-khushi te katuk ami thaki ba na thaki, seta tumi nijeyi bhalo jano.<br><br>
-                    Ar ekbar sorry bolchi shob kichur jonno. Sotti amar khub kharap lage. Ar ekta kotha bolar chilo, jeta joto taratari bolte parbo, totoi amar jonno bhalo hobe.<br><br>
-                    Tumi to ar message koro na, ar sotti bolte ami chai o na je tumi kono pressure niye message koro. Kintu jokhon tomar ichha hobe, hok seta 1–2 mash pore ba 1–2 bochor pore, ekbar text koro. Amar mone ekta kotha atke ache, seta shudhu tomake bolte chai. Tar beshi kichu na. 🥰<br><br>
-                    Nijer khayal rekho. Bhalo theko, Porasona koro thik moto khabar kheyo ar valo bondhu bandhobi banao.<br><br>
-                    Lots of love to you, as an elder one... 
-                    Pekathi 😁❤️
+                    Khub e valo thakbe ar thako ami thaki ba na thaki 🤗<br>
+                    Porasona koro thick kore<br>
+                    Ar aktu nijer kheyal rakho ar khao thick moto 😿<br><br>
+                    Pore onek kichu lekha ache chobi r sathe ar gan er sathe headphone lagiye gan sono ar chaile akhon poro ba pore ba na poro tomar mon🥰
                 </p>
             </div>
 
-            <!-- Dynamic Button (Next Page -> Close) -->
+            <!-- Page 2 (HBAUDIO 1.mp3 + photo 1.jpg) -->
+            <div id="page2" class="letter-text" style="display: none;">
+                <p style="margin: 0;">
+                    Lok e bolto prothom dekhai valobasa ami oto tao oi sob e mantam na jake jani na chini na take kikore valobaste pare tai na ?🤔<br><br>
+                    Ami bhul chilam tomake na dekhei tomake valobese phelechilam ar biyer din dekhar por to mone holo ato sundor meye potbe amar diye 😵‍💫<br><br>
+                    Mone ache sai din gulo koto sundor chilo sob suru holo misti khawate asa niye<br>
+                    Astei mala poriya diyachi sobar samne ar tumi rege chole gele<br>
+                    Rumal lukiye diyechilam koto chaile tumi tar por dilam<br>
+                    Tar por abar mala porate tumi mala niye chole gele<br>
+                    Tar por juto chuti niye Oita kikore bhulte pari 🤭<br>
+                    Koto kotha koto ragano koto juti niye tana tani<br>
+                    Tar por jokhon sobai majh rat e bose chilo amai tomar jonne gan korchilam tumi to amar dike takiye I chile 😓<br>
+                    Tokono mone hoychilo gan ki kharap korchi na o rege ache na ki bujhtei pari na<br>
+                    Chad e giye dekhi tumi amar kache akai aste cheyacho tokhon bujhlam hoi to pochondo koro😩<br>
+                    Diye jawar age tomar gate er samne dariye amake byee kora<br><br>
+                    Biyer din amake na dekhte peye khoj kore ghor bhitor dekhte peye amake daka<br>
+                    Number dite giye number na newa<br>
+                    Abar kobe dekha hobe gigas kotai pore hoi to<br>
+                    Jawar ageo 2 - 3 bar takano<br><br>
+                    Jani jonmo din er din o tomar jonne ato kichu likhchi kintu likhte amar khub e pochondo karon samne thakle to mathai sudhu tumi thako 💞<br>
+                    2 Bochor hoye gelo kintu din gulo mone korle khub e valo lage 🥹
+                </p>
+            </div>
+
+            <!-- Page 3 (HBAUDIO 2.mp3 + photo 2.jpg) -->
+            <div id="page3" class="letter-text" style="display: none;">
+                <p style="margin: 0;">
+                    Sob che valo lage tomake dekhte se tumi sajo ki na sajo<br>
+                    Sundor to tumi amar jonne sob somoi e<br>
+                    Tumi bolechile ono kaoke khuje debo ki na<br>
+                    Moja te ha bolachilam kintu amar to tomakei chai<br>
+                    Khub e valo besa felachi je tumi amar akhono valobasa bolai mon hoychilo songe songe joriye dhore boli ami bhulte pari ni amio oneeeekkkkkkkkkkk bhalo bese felechi tomake<br>
+                    Bole durotto bhalobasa barai ato ta barai jantam na<br>
+                    Tumi gigas korte esachile ami cha khao ki na amar baba kothai aita jiggas korte ese<br>
+                    Mon to chilo tomar hath er cha khabo kintu tokhon na bolte holo jodi pore kono din tomader bari jai cha baniye khawabe 🤭?<br>
+                    Ami aaj o gigas korbo ami jodi oi din na gigas kortam tumi kano amar dike takao ato<br>
+                    Tahole ki tumi kokhono samne theke kotha bolte na ?
+                </p>
+            </div>
+
+            <!-- Page 4 (HBAUDIO 3.mp3 + photo 3.jpg) -->
+            <div id="page4" class="letter-text" style="display: none;">
+                <p style="margin: 0;">
+                    Khub e valo lage tomar sathe thakte ar sara ta jibon thakte chai 💞<br>
+                    Valo lage tomake joriye rakhte ar poreo rakhte chai 🫂<br>
+                    Tomar buk e matha rakhle mon ta santo hoi jano khub e ghum pai 🥱<br>
+                    Somoi pele hoi to tomar buk e matha rekhe ghumate chai 😴<br>
+                    Ragate pochondo kori tai aktu ragai 😠<br>
+                    Kharap mone korleo to pore ami e tomai manai 🤭<br>
+                    Kotha khub e ache ar thake bolar kintu sathe thaklei jano sob bhule jai 😵‍💫<br>
+                    Pore mone porle to ar somoi e nai 🤧<br>
+                    Tumi rege bolachile tumi amake valobaso na....tai 🥺<br>
+                    Ami tomar ase pase na thakle tahole kano tomar chokh amake khuje berai 👀<br>
+                    Jiggas korechile kon chocolate pochondo kokhono aita gigas koro ni to ki pochondo 🥲<br>
+                    Jodi boli tumi pochondo to tumi ki amar hobe ?🥰<br>
+                    Chailei ami aro onek likhte pari kintu tumi ki oto porbe ?🤔<br>
+                    Ami tomai sara jibon birokto korle tumi ki amake sojjo korbe ?😁<br>
+                    Tumi bolechile tumi amar sathe thakbe .. tai naki ?😶‍🌫️<br>
+                    Jodi boli ami oto tao valo chele na tumi ki tao amar sathe ghor korbe ?🤣<br>
+                    Hoi to mone hote pare kothao theke ai lekha ta niyache 😕<br>
+                    Kintu aita madhav nijer riyar jonne onek bhebe likhache ❤️<br>
+                    Jodi pore thako tahole hoi to proshner uttor er opekkha thakbe 😓<br>
+                    Baire chole gele khub mone porbe asa korbo tomar o amar kotha mone thakbe 🤗<br><br>
+                    <b>Ar sesh Khub e Bhalo besachi ar Bhalo basbo 😘</b>
+                </p>
+            </div>
+
+            <!-- Navigation Button -->
             <button id="letterNavBtn" class="reveal-btn" 
-                    style="opacity:1; display:block; position:relative; width:100%; margin-top:8px; padding: 8px; font-size: 0.8rem; bottom: auto;" 
-                    onclick="nextLetterPage()">Next Page 💌</button>
+                    style="opacity:1; display:block; position:relative; width:100%; margin-top:8px; padding: 8px; font-size: 0.85rem; bottom: auto;" 
+                    onclick="nextLetterPage()">Next Page (1/4) 💌</button>
         </div>
     </div>
 
@@ -267,6 +347,57 @@
     </div>
 
     <script>
+        // Media mapping configuration
+        const mediaPages = [
+            { photo: "photo.jpg", audio: "HBAUDIO.mp3" },
+            { photo: "photo 1.jpg", audio: "HBAUDIO 1.mp3" },
+            { photo: "photo 2.jpg", audio: "HBAUDIO 2.mp3" },
+            { photo: "photo 3.jpg", audio: "HBAUDIO 3.mp3" }
+        ];
+
+        let currentAudio = new Audio();
+        currentAudio.loop = true;
+
+        // Smoothly fade out current audio and fade in new audio
+        function switchAudio(newAudioSrc) {
+            const fadeTime = 1200; // 1.2s fade duration
+            const steps = 20;
+            const intervalTime = fadeTime / steps;
+
+            if (!currentAudio.paused) {
+                let vol = currentAudio.volume;
+                let fadeOutInterval = setInterval(() => {
+                    vol -= 1 / steps;
+                    if (vol <= 0.05) {
+                        clearInterval(fadeOutInterval);
+                        currentAudio.pause();
+                        playNewAudio(newAudioSrc);
+                    } else {
+                        currentAudio.volume = Math.max(0, vol);
+                    }
+                }, intervalTime);
+            } else {
+                playNewAudio(newAudioSrc);
+            }
+        }
+
+        function playNewAudio(src) {
+            currentAudio.src = encodeURIComponent(src);
+            currentAudio.volume = 0;
+            currentAudio.play().then(() => {
+                let vol = 0;
+                let fadeInInterval = setInterval(() => {
+                    vol += 1 / 20;
+                    if (vol >= 0.95) {
+                        currentAudio.volume = 1;
+                        clearInterval(fadeInInterval);
+                    } else {
+                        currentAudio.volume = Math.min(1, vol);
+                    }
+                }, 60);
+            }).catch(e => console.log("Audio play blocked or missing file:", e));
+        }
+
         function createConfetti() {
             const colors = ['#ff5d8f', '#c2185b', '#ffd54f', '#4db6ac', '#a0e9ff'];
             for (let i = 0; i < 65; i++) {
@@ -286,7 +417,9 @@
         }
 
         function blowCandle() {
-            document.getElementById('bdayAudio').play().catch(e => console.log("Audio failed"));
+            // Play initial HBAUDIO.mp3 on candle blow
+            switchAudio(mediaPages[0].audio);
+
             document.getElementById('flame').classList.add('off');
             document.getElementById('smoke').classList.add('active');
             
@@ -321,11 +454,34 @@
 
         let currentPage = 1;
         function nextLetterPage() {
-            if (currentPage === 1) {
-                document.getElementById('page1').style.display = 'none';
-                document.getElementById('page2').style.display = 'block';
-                document.getElementById('letterNavBtn').innerText = 'Close ❤️';
-                currentPage = 2;
+            document.getElementById('page' + currentPage).style.display = 'none';
+            currentPage++;
+
+            if (currentPage <= 4) {
+                // Show new text page with animation
+                const nextPageEl = document.getElementById('page' + currentPage);
+                nextPageEl.style.display = 'block';
+                nextPageEl.classList.remove('fade-up-down');
+                void nextPageEl.offsetWidth; 
+                nextPageEl.classList.add('fade-up-down');
+
+                // Fade & update photo
+                const photoEl = document.getElementById('letterPhoto');
+                photoEl.style.opacity = '0';
+                setTimeout(() => {
+                    photoEl.src = encodeURIComponent(mediaPages[currentPage - 1].photo);
+                    photoEl.style.opacity = '1';
+                }, 250);
+
+                // Cross-fade Audio
+                switchAudio(mediaPages[currentPage - 1].audio);
+
+                // Update button label
+                if (currentPage === 4) {
+                    document.getElementById('letterNavBtn').innerText = 'Close ❤️';
+                } else {
+                    document.getElementById('letterNavBtn').innerText = `Next Page (${currentPage}/4) 💌`;
+                }
             } else {
                 closeLetter();
             }
@@ -333,6 +489,19 @@
 
         function closeLetter() {
             document.getElementById('letter').style.opacity = '0';
+            
+            // Fade out final audio gracefully
+            let vol = currentAudio.volume;
+            let fadeOut = setInterval(() => {
+                vol -= 0.1;
+                if (vol <= 0) {
+                    clearInterval(fadeOut);
+                    currentAudio.pause();
+                } else {
+                    currentAudio.volume = vol;
+                }
+            }, 100);
+
             setTimeout(() => { 
                 document.getElementById('letter').style.display = 'none';
                 document.getElementById('treat').classList.add('show'); 
