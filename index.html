@@ -55,7 +55,7 @@
         .Happy__Birthday { 
             position: absolute; top: 8%;
             font-family: 'Brush Script MT', cursive; color: var(--primary-pink); 
-            font-size: 2.8rem; opacity: 0; transition: opacity 2s ease, transform 2s ease;
+            font-size: clamp(1.8rem, 5vw, 2.8rem); opacity: 0; transition: opacity 2s ease, transform 2s ease;
             transform: translateY(-20px); pointer-events: none;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
@@ -108,7 +108,7 @@
             position: absolute; bottom: 12%;
             padding: 15px 35px; font-weight: bold; color: white; 
             background-color: var(--strawberry-dark); border: none; border-radius: 50px; 
-            cursor: pointer; transition: 0.5s ease; z-index: 20;
+            cursor: pointer; transition: opacity 0.5s ease; z-index: 20;
             animation: realisticDrop 0.8s ease-out 1.9s both;
         }
 
@@ -165,6 +165,7 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.18);
         }
         .photo-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; transition: opacity 0.4s ease; }
+        .photo-slide .photo-fallback { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 3rem; color: var(--primary-pink); }
         
         /* Side-by-Side Tilted positioning on reveal */
         .letter-wrapper.revealed .photo-slide { opacity: 1; transform: translateX(-55%) rotate(-3deg); }
@@ -174,6 +175,9 @@
         @media (max-width: 500px) {
             .letter-wrapper.revealed .photo-slide { transform: translateX(-48%) scale(0.9) rotate(-3deg); }
             .letter-wrapper.revealed .cyan-letter { transform: translateX(48%) scale(0.9) rotate(3deg); }
+            .front-layer { width: 160px; }
+            .back-layer { width: 110px; }
+            .layer { height: 80px; }
         }
 
         /* Envelope Icon */
@@ -209,13 +213,22 @@
         
         .letter-text::-webkit-scrollbar { width: 4px; }
         .letter-text::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 4px; }
+
+        /* Respect reduced motion preference */
+        @media (prefers-reduced-motion: reduce) {
+            .particles { animation: none; }
+            .flame { animation: none; }
+            .drip { animation: none; height: 40px; }
+            .fade-up-down { animation: none; opacity: 1; filter: none; }
+            * { transition-duration: 0.1s !important; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="particles"></div>
+    <div class="particles" aria-hidden="true"></div>
 
-    <svg style="position: absolute; width: 0; height: 0;">
+    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
         <filter id="gooey">
             <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
             <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" />
@@ -225,7 +238,7 @@
     <div class="main-stage" id="stage">
         <h1 class="Happy__Birthday" id="hbText">Happy Birthday HADDI 🦴</h1>
 
-        <div class="cake-container">
+        <div class="cake-container" role="img" aria-label="Birthday cake with a candle">
             <div class="layer back-layer">
                 <div class="candle-group">
                     <div class="flame" id="flame"></div>
@@ -239,14 +252,14 @@
             </div>
         </div>
 
-        <button class="blow-btn" onclick="blowCandle()" id="blowBtn">Blow the Candle 🎂</button>
-        <button class="reveal-btn" id="revealBtn" onclick="showEnvelope()">Reveal Your Letter 💌</button>
+        <button class="blow-btn" onclick="blowCandle()" id="blowBtn" aria-label="Blow out the birthday candle">Blow the Candle 🎂</button>
+        <button class="reveal-btn" id="revealBtn" onclick="showEnvelope()" aria-label="Reveal your birthday letter">Reveal Your Letter 💌</button>
     </div>
 
-    <div id="envelope" onclick="openLetter()">💌</div>
+    <div id="envelope" onclick="openLetter()" role="button" tabindex="0" aria-label="Open your birthday letter" onkeydown="if(event.key==='Enter'||event.key===' ')openLetter()">💌</div>
 
     <!-- Letter Popup with Dynamic Audio & Photo Transitions -->
-    <div class="letter-wrapper" id="letter">
+    <div class="letter-wrapper" id="letter" role="dialog" aria-label="Birthday letter">
         <div class="photo-slide" id="photoContainer">
             <img id="letterPhoto" src="photo.jpg" alt="Riya's Birthday Photo">
         </div>
@@ -335,90 +348,146 @@
             <!-- Navigation Button -->
             <button id="letterNavBtn" class="reveal-btn" 
                     style="opacity:1; display:block; position:relative; width:100%; margin-top:8px; padding: 8px; font-size: 0.85rem; bottom: auto;" 
-                    onclick="nextLetterPage()">Next Page (1/4) 💌</button>
+                    onclick="nextLetterPage()" aria-label="Go to next page">Next Page (1/4) 💌</button>
         </div>
     </div>
 
     <!-- Treat Popup -->
-    <div class="treat-popup" id="treat">
+    <div class="treat-popup" id="treat" role="dialog" aria-label="Birthday treat request">
         <h2 style="color: var(--primary-pink); margin-top: 0;">Wait! 😝</h2>
         <p>Where is Birthday Treat ?</p>
         <a href="https://wa.me/917074471907?text=%2AI%20will%20give%20you%20the%20treat%20soon%20%F0%9F%98%8A%2A" 
-           target="_blank" class="reveal-btn" style="opacity:1; position:relative; display:inline-block; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
+           target="_blank" rel="noopener" class="reveal-btn" style="opacity:1; position:relative; display:inline-block; margin-top:10px; text-decoration: none;">I'll give it! 🍦</a>
     </div>
 
     <script>
-        // Media mapping configuration
+        'use strict';
+
+        // --- Media mapping configuration ---
+        // Filenames with spaces are fine as relative URLs in img.src / Audio.src
         const mediaPages = [
-            { photo: "photo.jpg", audio: "HBAUDIO.mp3" },
-            { photo: "photo 1.jpg", audio: "HBAUDIO 1.mp3" },
-            { photo: "photo 2.jpg", audio: "HBAUDIO 2.mp3" },
-            { photo: "photo 3.jpg", audio: "HBAUDIO 3.mp3" }
+            { photo: "photo.jpg",     audio: "HBAUDIO.mp3" },
+            { photo: "photo 1.jpg",   audio: "HBAUDIO 1.mp3" },
+            { photo: "photo 2.jpg",   audio: "HBAUDIO 2.mp3" },
+            { photo: "photo 3.jpg",   audio: "HBAUDIO 3.mp3" }
         ];
 
+        const TOTAL_PAGES = mediaPages.length;
+
+        // --- Preload images & audio so they're cached before display ---
+        mediaPages.forEach(page => {
+            const img = new Image();
+            img.src = page.photo;
+            const aud = new Audio();
+            aud.src = page.audio;
+            aud.preload = 'auto';
+        });
+
+        // --- Audio management ---
         let currentAudio = new Audio();
         currentAudio.loop = true;
+        currentAudio.volume = 0;
 
-        // Smoothly fade out current audio and fade in new audio
-        function switchAudio(newAudioSrc) {
-            const fadeTime = 1200; // 3s fade duration
-            const steps = 20;
-            const intervalTime = fadeTime / steps;
+        // Track active fade animation so we can cancel a stale one
+        let activeFadeRAF = null;
 
-            if (!currentAudio.paused) {
-                let vol = currentAudio.volume;
-                let fadeOutInterval = setInterval(() => {
-                    vol -= 1 / steps;
-                    if (vol <= 0.05) {
-                        clearInterval(fadeOutInterval);
-                        currentAudio.pause();
-                        playNewAudio(newAudioSrc);
-                    } else {
-                        currentAudio.volume = Math.max(0, vol);
-                    }
-                }, intervalTime);
-            } else {
-                playNewAudio(newAudioSrc);
+        function cancelFade() {
+            if (activeFadeRAF) {
+                cancelAnimationFrame(activeFadeRAF);
+                activeFadeRAF = null;
             }
         }
 
-        function playNewAudio(src) {
-            currentAudio.src = encodeURIComponent(src);
-            currentAudio.volume = 0;
-            currentAudio.play().then(() => {
-                let vol = 0;
-                let fadeInInterval = setInterval(() => {
-                    vol += 1 / 20;
-                    if (vol >= 0.95) {
-                        currentAudio.volume = 1;
-                        clearInterval(fadeInInterval);
-                    } else {
-                        currentAudio.volume = Math.min(1, vol);
-                    }
-                }, 60);
-            }).catch(e => console.log("Audio play blocked or missing file:", e));
+        // Smooth easing (easeInOutQuad) for natural-sounding volume transitions
+        function easeInOutQuad(t) {
+            return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
         }
 
+        // Animate volume from current level to target over `duration` ms, then call onDone
+        function animateVolume(targetVol, duration, onDone) {
+            cancelFade();
+            const startVol = currentAudio.volume;
+            const startTime = performance.now();
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const eased = easeInOutQuad(progress);
+                currentAudio.volume = startVol + (targetVol - startVol) * eased;
+
+                if (progress < 1) {
+                    activeFadeRAF = requestAnimationFrame(step);
+                } else {
+                    currentAudio.volume = targetVol;
+                    activeFadeRAF = null;
+                    if (onDone) onDone();
+                }
+            }
+            activeFadeRAF = requestAnimationFrame(step);
+        }
+
+        // Fade out current audio, then load & fade in new audio
+        function switchAudio(newAudioSrc) {
+            const FADE_DURATION = 1500; // 1.5s for a gentle transition
+
+            cancelFade();
+
+            if (!currentAudio.paused && currentAudio.volume > 0) {
+                // Fade out first, then swap
+                animateVolume(0, FADE_DURATION, () => {
+                    currentAudio.pause();
+                    playNewAudio(newAudioSrc, FADE_DURATION);
+                });
+            } else {
+                // Nothing playing — start new audio immediately
+                currentAudio.pause();
+                playNewAudio(newAudioSrc, FADE_DURATION);
+            }
+        }
+
+        function playNewAudio(src, fadeDuration) {
+            currentAudio.src = src;
+            currentAudio.volume = 0;
+            currentAudio.play().then(() => {
+                animateVolume(1, fadeDuration);
+            }).catch(e => {
+                console.warn("Audio playback blocked or file missing:", src, e);
+            });
+        }
+
+        // --- Confetti ---
         function createConfetti() {
             const colors = ['#ff5d8f', '#c2185b', '#ffd54f', '#4db6ac', '#a0e9ff'];
+            const fragment = document.createDocumentFragment();
+            const particles = [];
+
             for (let i = 0; i < 65; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'confetti';
                 particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.left = '50%';
                 particle.style.top = '15%';
-                const tx = (Math.random() - 0.5) * 800 + 'px';
-                const ty = (Math.random() - 0.2) * 800 + 'px';
-                particle.style.setProperty('--tx', tx);
-                particle.style.setProperty('--ty', ty);
+                particle.style.setProperty('--tx', (Math.random() - 0.5) * 800 + 'px');
+                particle.style.setProperty('--ty', (Math.random() - 0.2) * 800 + 'px');
                 particle.style.animation = `crackerBlast ${1 + Math.random()}s ease-out forwards`;
-                document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 2000);
+                fragment.appendChild(particle);
+                particles.push(particle);
             }
+            document.body.appendChild(fragment);
+
+            // Clean up all confetti after animation
+            setTimeout(() => {
+                particles.forEach(p => p.remove());
+            }, 2500);
         }
 
+        // --- Candle blow ---
+        let candleBlown = false;
         function blowCandle() {
-            // Play initial HBAUDIO.mp3 on candle blow
+            if (candleBlown) return; // prevent double-trigger
+            candleBlown = true;
+
+            // Play first audio on candle blow (user gesture — avoids autoplay block)
             switchAudio(mediaPages[0].audio);
 
             document.getElementById('flame').classList.add('off');
@@ -426,6 +495,7 @@
             
             const blowBtn = document.getElementById('blowBtn');
             blowBtn.style.opacity = '0';
+            blowBtn.style.pointerEvents = 'none';
             setTimeout(() => { blowBtn.style.display = 'none'; }, 600);
 
             setTimeout(() => {
@@ -438,6 +508,7 @@
             }, 2300);
         }
 
+        // --- Envelope reveal ---
         function showEnvelope() {
             document.getElementById('stage').classList.add('blur-effect');
             setTimeout(() => { 
@@ -445,69 +516,96 @@
             }, 300);
         }
 
+        // --- Open letter ---
         function openLetter() {
-            document.getElementById('envelope').style.animation = 'none';
-            document.getElementById('envelope').style.opacity = '0';
+            const envelope = document.getElementById('envelope');
+            envelope.style.animation = 'none';
+            envelope.style.opacity = '0';
+            envelope.style.pointerEvents = 'none';
             const wrap = document.getElementById('letter');
+            wrap.style.display = '';
             wrap.classList.add('open');
             setTimeout(() => { wrap.classList.add('revealed'); }, 900);
         }
 
+        // --- Letter page navigation ---
         let currentPage = 1;
-        function nextLetterPage() {
-            document.getElementById('page' + currentPage).style.display = 'none';
-            currentPage++;
 
-            if (currentPage <= 4) {
+        function nextLetterPage() {
+            if (currentPage < TOTAL_PAGES) {
+                // Hide current page
+                document.getElementById('page' + currentPage).style.display = 'none';
+                currentPage++;
+
                 // Show new text page with animation
                 const nextPageEl = document.getElementById('page' + currentPage);
                 nextPageEl.style.display = 'block';
                 nextPageEl.classList.remove('fade-up-down');
-                void nextPageEl.offsetWidth; 
+                void nextPageEl.offsetWidth; // force reflow to restart animation
                 nextPageEl.classList.add('fade-up-down');
 
                 // Fade & update photo
                 const photoEl = document.getElementById('letterPhoto');
                 photoEl.style.opacity = '0';
                 setTimeout(() => {
-                    photoEl.src = encodeURIComponent(mediaPages[currentPage - 1].photo);
+                    photoEl.src = mediaPages[currentPage - 1].photo;
                     photoEl.style.opacity = '1';
                 }, 250);
 
-                // Cross-fade Audio
+                // Cross-fade audio
                 switchAudio(mediaPages[currentPage - 1].audio);
 
                 // Update button label
-                if (currentPage === 4) {
-                    document.getElementById('letterNavBtn').innerText = 'Close ❤️';
+                const navBtn = document.getElementById('letterNavBtn');
+                if (currentPage === TOTAL_PAGES) {
+                    navBtn.innerText = 'Close ❤️';
+                    navBtn.setAttribute('aria-label', 'Close the letter');
                 } else {
-                    document.getElementById('letterNavBtn').innerText = `Next Page (${currentPage}/4) 💌`;
+                    navBtn.innerText = `Next Page (${currentPage}/${TOTAL_PAGES}) 💌`;
+                    navBtn.setAttribute('aria-label', `Go to page ${currentPage + 1}`);
                 }
             } else {
                 closeLetter();
             }
         }
 
+        // --- Close letter & show treat popup ---
         function closeLetter() {
-            document.getElementById('letter').style.opacity = '0';
-            
-            // Fade out final audio gracefully
-            let vol = currentAudio.volume;
-            let fadeOut = setInterval(() => {
-                vol -= 0.1;
-                if (vol <= 0) {
-                    clearInterval(fadeOut);
-                    currentAudio.pause();
-                } else {
-                    currentAudio.volume = vol;
-                }
-            }, 100);
+            const letter = document.getElementById('letter');
+            letter.style.opacity = '0';
+
+            // Fade out audio gracefully
+            animateVolume(0, 1500, () => {
+                currentAudio.pause();
+                currentAudio.volume = 0;
+            });
 
             setTimeout(() => { 
-                document.getElementById('letter').style.display = 'none';
+                letter.style.display = 'none';
                 document.getElementById('treat').classList.add('show'); 
             }, 600);
         }
+
+        // --- Image error fallback: show emoji placeholder ---
+        document.getElementById('letterPhoto').addEventListener('error', function() {
+            const container = document.getElementById('photoContainer');
+            // Only replace once to avoid loops
+            if (!container.querySelector('.photo-fallback')) {
+                this.style.display = 'none';
+                const fallback = document.createElement('div');
+                fallback.className = 'photo-fallback';
+                fallback.textContent = '📸';
+                container.appendChild(fallback);
+            }
+        });
+
+        // --- Keyboard support for envelope (Enter / Space) ---
+        document.getElementById('envelope').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                openLetter();
+            }
+        });
     </script>
 </body>
 </html>
